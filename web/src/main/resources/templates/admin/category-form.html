@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head(pageTitle=${pageTitle})}"></head>
+<body class="d-flex flex-column min-vh-100">
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="container mt-4 flex-shrink-0">
+        <h1 th:text="${pageTitle}">Thêm/Sửa Danh Mục</h1>
+
+        <!-- Thông báo lỗi chung -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+             <span th:text="${errorMessage}"></span>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+         <!-- Hiển thị lỗi validation tổng thể (nếu có) -->
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Global error message</p>
+        </div>
+
+
+        <form th:action="@{/admin/categories/save}" th:object="${category}" method="post" class="col-md-6">
+             <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên Danh Mục:</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                <!-- Hiển thị lỗi validation cho trường name -->
+                <div class="text-danger mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu Danh Mục</button>
+            <a th:href="@{/admin/categories}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

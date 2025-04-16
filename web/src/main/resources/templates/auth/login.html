@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head(pageTitle='Đăng Nhập')}"></head>
+<body class="d-flex flex-column min-vh-100">
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="container mt-5 flex-shrink-0">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <h2 class="text-center mb-4">Đăng Nhập</h2>
+
+                <!-- Thông báo lỗi chung khi login sai -->
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    Tên đăng nhập hoặc mật khẩu không đúng.
+                </div>
+                 <!-- Thông báo khi logout thành công -->
+                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                    Bạn đã đăng xuất thành công.
+                </div>
+                 <!-- Thông báo đăng ký thành công (từ RedirectAttributes) -->
+                 <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+
+                <form th:action="@{/login}" method="post">
+                    <!-- CSRF token tự động được thêm bởi Thymeleaf + Spring Security -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên đăng nhập:</label>
+                        <input type="text" id="username" name="username" class="form-control" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu:</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+                    <!-- Remember me (Tùy chọn)
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                        <label class="form-check-label" for="remember-me">Ghi nhớ tôi</label>
+                    </div>
+                    -->
+                    <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
+                </form>
+                <p class="mt-3 text-center">
+                    Chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

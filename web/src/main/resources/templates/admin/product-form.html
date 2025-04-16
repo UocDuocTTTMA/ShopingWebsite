@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head(pageTitle=${pageTitle})}"></head>
+<body class="d-flex flex-column min-vh-100">
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="container mt-4 flex-shrink-0">
+        <h1 th:text="${pageTitle}">Thêm/Sửa Sản Phẩm</h1>
+
+         <!-- Thông báo lỗi -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+             <span th:text="${errorMessage}"></span>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form th:action="@{/admin/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">
+             <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên sản phẩm:</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                <div class="text-danger mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+
+            <!-- **** THÊM PHẦN CHỌN CATEGORY **** -->
+            <div class="mb-3">
+                <label for="category" class="form-label">Danh mục:</label>
+                <select id="category" th:field="*{category.id}" class="form-select" required>
+                     <option value="">-- Chọn Danh Mục --</option>
+                     <!-- Lặp qua danh sách categories được truyền từ Controller -->
+                     <option th:each="cat : ${categories}"
+                             th:value="${cat.id}"
+                             th:text="${cat.name}">Category Name</option>
+                </select>
+                 <!-- Hiển thị lỗi validation cho category -->
+                <div class="text-danger mt-1" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Category Error</div>
+            </div>
+             <!-- **** KẾT THÚC PHẦN CHỌN CATEGORY **** -->
+
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Mô tả:</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
+                 <div class="text-danger mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Giá (VNĐ):</label>
+                <input type="number" id="price" th:field="*{price}" class="form-control" required step="0.01" min="0">
+                 <div class="text-danger mt-1" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imageFile" class="form-label">Chọn Hình Ảnh Sản Phẩm:</label>
+                <input type="file" id="imageFile" name="imageFile" class="form-control" accept="image/png, image/jpeg, image/gif">
+                 <div th:if="${product.imageUrl != null and product.id != null}" class="mt-2">
+                    <label class="form-label">Ảnh hiện tại:</label><br/>
+                    <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm" style="max-width: 150px; max-height: 150px;">
+                    <input type="hidden" th:field="*{imageUrl}" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu Sản Phẩm</button>
+            <a th:href="@{/products}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

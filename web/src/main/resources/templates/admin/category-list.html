@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: header-head(pageTitle='Quản lý Danh Mục')}"></head>
+<body class="d-flex flex-column min-vh-100">
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="container mt-4 flex-shrink-0">
+        <h1 class="mb-4">Quản Lý Danh Mục</h1>
+
+        <!-- Thông báo -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+             <span th:text="${errorMessage}"></span>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="mb-3">
+             <a th:href="@{/admin/categories/new}" class="btn btn-success">Thêm Danh Mục Mới</a>
+        </div>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Danh Mục</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.id}">1</td>
+                    <td th:text="${category.name}">Electronics</td>
+                    <td>
+                        <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="#" th:onclick="|confirmDeleteCategory('${category.id}', '${category.name}')|" class="btn btn-sm btn-danger">Xóa</a>
+                        <form th:id="'deleteCategoryForm-' + ${category.id}" th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="get" style="display: none;"></form>
+                    </td>
+                </tr>
+                 <tr th:if="${#lists.isEmpty(categories)}">
+                    <td colspan="3" class="text-center">Không có danh mục nào.</td>
+                </tr>
+            </tbody>
+        </table>
+
+         <!-- Script confirm delete category -->
+        <script>
+            function confirmDeleteCategory(categoryId, categoryName) {
+                if (confirm('Bạn có chắc chắn muốn xóa danh mục "' + categoryName + '" không? Hành động này không thể hoàn tác.')) {
+                    document.getElementById('deleteCategoryForm-' + categoryId).submit();
+                }
+            }
+        </script>
+
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
